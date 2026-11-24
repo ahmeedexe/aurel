@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #08090b;
+  --color-charcoal: #15171a;
+  --color-graphite: #24272b;
+  --color-silver: #c5c8cc;
+  --color-warm: #f0f0eb;
+  --color-signal: #d62828;
+  --font-display: "Bebas Neue", system-ui, sans-serif;
+  --font-editorial: "Instrument Serif", Georgia, serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    background: var(--color-ink);
+    color: var(--color-warm);
+    font-family: var(--font-body);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: var(--color-ink);
+  }
+
+  html.custom-cursor,
+  html.custom-cursor * {
+    cursor: none !important;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-signal) 35%, transparent);
+    color: var(--color-warm);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 3px;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: -999px;
+    top: 0;
+    z-index: 10000;
+    padding: 0.75rem 1rem;
+    background: var(--color-warm);
+    color: var(--color-ink);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .skip-link:focus {
+    left: 1rem;
+    top: 1rem;
+  }
+}
+
+@layer utilities {
+  .text-display {
+    font-family: var(--font-display);
+    letter-spacing: 0.02em;
+    line-height: 0.88;
+  }
+
+  .text-editorial {
+    font-family: var(--font-editorial);
+  }
+
+  .text-mono {
+    font-family: var(--font-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 0.65rem;
+  }
+
+  .grid-editorial {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: clamp(2rem, 6vw, 5rem);
+  }
+
+  @media (max-width: 900px) {
+    .grid-editorial {
+      grid-template-columns: 1fr;
+    }
+  }
+}
