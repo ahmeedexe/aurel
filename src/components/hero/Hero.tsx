@@ -20,17 +20,17 @@ export function Hero({ ready }: Props) {
     const ctx = gsap.context(() => {
       const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
       intro
-        .fromTo(".hero-bg", { opacity: 0 }, { opacity: 1, duration: 0.8 })
-        .fromTo(".hero-mark", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 }, "-=0.45")
+        .fromTo(".hero-bg", { opacity: 0 }, { opacity: 1, duration: 0.45 })
+        .fromTo(".hero-mark", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.45 }, "-=0.35")
         .fromTo(
           ".hero-mask",
           { clipPath: "inset(100% 0 0 0)" },
-          { clipPath: "inset(0% 0 0 0)", duration: 1.35, ease: "power4.out" },
-          "-=0.2"
+          { clipPath: "inset(0% 0% 0% 0%)", duration: 0.95, ease: "power4.out" },
+          "-=0.28"
         )
-        .fromTo(".hero-line", { yPercent: 115, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.85, stagger: 0.14 }, "-=0.75")
-        .fromTo(".hero-sub", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.55 }, "-=0.45")
-        .fromTo(".hero-cta", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45 }, "-=0.35");
+        .fromTo(".hero-line", { yPercent: 115, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.65, stagger: 0.1 }, "-=0.55")
+        .fromTo(".hero-sub", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4 }, "-=0.35")
+        .fromTo(".hero-cta", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.35 }, "-=0.28");
 
       ScrollTrigger.create({
         trigger: wrap.current,

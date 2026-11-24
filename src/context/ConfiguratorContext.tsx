@@ -29,7 +29,8 @@ type ConfiguratorContextValue = ConfigState & {
   paintHex: string;
   interiorHex: string;
   wheelScale: number;
-  wheelWidth: number;
+  rimHex: string;
+  rimRoughness: number;
   envPreset: "studio" | "sunset" | "night";
   lightAccent: string;
 };
@@ -48,7 +49,7 @@ export function ConfiguratorProvider({ children }: { children: ReactNode }) {
   const value = useMemo(() => {
     const paintHex = PAINTS.find((p) => p.id === state.paint)!.hex;
     const interiorHex = INTERIORS.find((p) => p.id === state.interior)!.hex;
-    const wheel = WHEELS.find((p) => p.id === state.wheels)!;
+    const wheelOpt = WHEELS.find((p) => p.id === state.wheels)!;
     const light = LIGHTING.find((p) => p.id === state.lighting)!;
     return {
       ...state,
@@ -59,8 +60,9 @@ export function ConfiguratorProvider({ children }: { children: ReactNode }) {
       reset,
       paintHex,
       interiorHex,
-      wheelScale: wheel.scale,
-      wheelWidth: wheel.width,
+      wheelScale: wheelOpt.scale,
+      rimHex: wheelOpt.rimHex,
+      rimRoughness: wheelOpt.roughness,
       envPreset: light.preset,
       lightAccent: light.accent,
     };

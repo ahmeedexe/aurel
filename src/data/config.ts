@@ -10,10 +10,10 @@ export const PAINTS: { id: PaintId; label: string; hex: string }[] = [
   { id: "pearl", label: "Pearl White", hex: "#e6e4df" },
 ];
 
-export const WHEELS: { id: WheelId; label: string; scale: number; width: number }[] = [
-  { id: "aero", label: "Aero", scale: 0.92, width: 0.22 },
-  { id: "performance", label: "Performance", scale: 1, width: 0.26 },
-  { id: "signature", label: "Signature", scale: 1.06, width: 0.3 },
+export const WHEELS: { id: WheelId; label: string; scale: number; rimHex: string; roughness: number }[] = [
+  { id: "aero", label: "Aero", scale: 0.93, rimHex: "#6a6e75", roughness: 0.28 },
+  { id: "performance", label: "Performance", scale: 1, rimHex: "#9aa0a8", roughness: 0.22 },
+  { id: "signature", label: "Signature", scale: 1.05, rimHex: "#d4d8de", roughness: 0.14 },
 ];
 
 export const INTERIORS: { id: InteriorId; label: string; hex: string }[] = [

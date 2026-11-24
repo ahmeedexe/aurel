@@ -1,16 +1,28 @@
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import { Component, Suspense, lazy, type ReactNode } from "react";
-import { MOUSE } from "three";
+import { Html } from "@react-three/drei";
+import { Component, Suspense, lazy, useEffect, useRef, type ReactNode } from "react";
+import * as THREE from "three";
+import { CinematicOrbitControls } from "@/components/scenes/CinematicOrbitControls";
+import { dismissOrbitCoachmark, OrbitCoachmark } from "@/components/scenes/OrbitCoachmark";
 import { VehicleFallback } from "@/components/scenes/VehicleFallback";
+import { useCanvasInView } from "@/hooks/useCanvasInView";
+import { useFinePointer } from "@/hooks/useFinePointer";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useWebGLSupported } from "@/hooks/useWebGLSupported";
 
-const VehicleSculpt = lazy(() =>
-  import("@/components/scenes/VehicleSculpt").then((m) => ({ default: m.VehicleSculpt }))
+const VehicleModel = lazy(() =>
+  import("@/components/scenes/VehicleModel").then((m) => ({ default: m.VehicleModel }))
 );
 
 type Props = { className?: string; dpr?: number };
+
+function SceneLoader() {
+  return (
+    <Html center>
+      <p className="text-mono border border-graphite bg-ink/90 px-4 py-2 text-silver">Loading Type-01…</p>
+    </Html>
+  );
+}
 
 class WebGLErrorBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
   state = { failed: false };
@@ -28,35 +40,66 @@ class WebGLErrorBoundary extends Component<{ fallback: ReactNode; children: Reac
 export function VehicleCanvas({ className, dpr = 1.5 }: Props) {
   const reduced = useReducedMotion();
   const webgl = useWebGLSupported();
+  const fine = useFinePointer();
+  const { ref: viewRef, inView } = useCanvasInView<HTMLDivElement>();
+  const orbitActive = useRef(false);
 
-  if (!webgl) {
-    return <VehicleFallback className={`relative overflow-hidden ${className ?? ""}`} />;
+  useEffect(() => {
+    viewRef.current?.setAttribute("data-canvas-visible", inView ? "true" : "false");
+  }, [inView, viewRef]);
+
+  const onPointerDown = () => {
+    if (!fine && !orbitActive.current) {
+      orbitActive.current = true;
+      dismissOrbitCoachmark();
+    }
+  };
+
+  if (webgl === null) {
+    return (
+      <div
+        className={`flex items-center justify-center border border-graphite bg-charcoal ${className ?? ""}`}
+        aria-busy="true"
+      >
+        <p className="text-mono px-4 py-2 text-silver">Checking WebGL…</p>
+      </div>
+    );
   }
 
+  if (!webgl) {
+    return <VehicleFallback className={`relative overflow-hidden ${className ?? ""}`} reason="webgl" />;
+  }
+
+  const maxDpr = reduced ? 1 : dpr;
+
   return (
-    <div className={className} data-cursor="orbit" aria-label="Interactive AUREL Type-01 sculpture">
-      <WebGLErrorBoundary fallback={<VehicleFallback className="relative h-full min-h-[280px] overflow-hidden" />}>
+    <div
+      ref={viewRef}
+      className={`relative ${className ?? ""}`}
+      data-cursor="orbit"
+      data-canvas-visible={inView ? "true" : "false"}
+      aria-label="Interactive AUREL Type-01"
+      onPointerDown={onPointerDown}
+    >
+      <OrbitCoachmark />
+      <WebGLErrorBoundary
+        fallback={<VehicleFallback className="relative h-full min-h-[280px] overflow-hidden" reason="error" />}
+      >
         <Canvas
-          dpr={reduced ? 1 : dpr}
-          camera={{ position: [3.2, 1.4, 4.2], fov: 42 }}
-          gl={{ antialias: true, powerPreference: "high-performance" }}
+          dpr={[1, maxDpr]}
+          frameloop={inView ? "always" : "demand"}
+          camera={{ position: [2.8, 0.95, 3.6], fov: 38 }}
+          gl={{
+            antialias: true,
+            powerPreference: "high-performance",
+            toneMapping: THREE.ACESFilmicToneMapping,
+            toneMappingExposure: 1.08,
+          }}
         >
-          <Suspense fallback={null}>
-            <VehicleSculpt />
+          <Suspense fallback={<SceneLoader />}>
+            <VehicleModel />
           </Suspense>
-          <OrbitControls
-            enablePan={false}
-            enableZoom={!reduced}
-            minDistance={3.2}
-            maxDistance={6}
-            maxPolarAngle={Math.PI / 2.1}
-            minPolarAngle={Math.PI / 4}
-            mouseButtons={{
-              LEFT: MOUSE.ROTATE,
-              MIDDLE: MOUSE.DOLLY,
-              RIGHT: undefined,
-            }}
-          />
+          <CinematicOrbitControls enableZoom={!reduced} />
         </Canvas>
       </WebGLErrorBoundary>
     </div>

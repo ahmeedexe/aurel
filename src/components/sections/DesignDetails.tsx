@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef } from "react";
+import { motion } from "motion/react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { IMAGES } from "@/lib/images";
 import { ensureGsapPlugins, gsap } from "@/lib/gsap";
@@ -63,22 +64,24 @@ export function DesignDetails() {
 
       <div ref={track} className="hidden w-max gap-3 px-5 pb-24 md:flex md:px-10">
         {items.map((item) => (
-          <figure
+          <motion.figure
             key={item.label}
             className={`group relative h-[min(62vh,520px)] overflow-hidden border border-graphite ${
               item.wide ? "w-[min(88vw,720px)]" : "w-[min(70vw,420px)]"
             }`}
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 260, damping: 26 }}
           >
             <img
               src={item.src}
               alt={item.label}
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
               loading="lazy"
             />
             <figcaption className="text-mono absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink via-ink/80 to-transparent p-4 text-silver">
               {item.label}
             </figcaption>
-          </figure>
+          </motion.figure>
         ))}
       </div>
     </section>

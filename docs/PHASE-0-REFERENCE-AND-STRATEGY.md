@@ -33,7 +33,7 @@
 | Intro preloader + hero choreography | GSAP timeline | Staggered mask, wordmark, headline lines |
 | Scroll story (6 sections) | GSAP ScrollTrigger | Pin, scrub, typographic reveals |
 | UI (nav, menu, config panel) | Motion (`motion/react`) | Spring overlays, layout |
-| 3D centerpiece | R3F + drei | Stylized **procedural sculpture** (licensed-free geometry); material/lighting swaps |
+| 3D centerpiece | R3F + drei | **GLB** (`aurel-type-01.glb`, three.js demo mesh); material/lighting swaps; self-hosted HDRIs |
 | Scroll smoothing | Lenis | Synced with ScrollTrigger; disabled when `prefers-reduced-motion` |
 
 Easing: `power3.out` for entrances, `power2.inOut` for scrubbed scroll. No spin loops.

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export function useWebGLSupported() {
-  const [supported, setSupported] = useState(true);
+  const [supported, setSupported] = useState<boolean | null>(null);
 
   useEffect(() => {
     try {

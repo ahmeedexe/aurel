@@ -24,6 +24,11 @@ export function LenisProvider({ children }: { children: ReactNode }) {
     const onScroll = () => ScrollTrigger.update();
     lenis.on("scroll", onScroll);
 
+    const onResize = () => {
+      ScrollTrigger.refresh();
+    };
+    window.addEventListener("resize", onResize);
+
     const tick = (time: number) => {
       lenis.raf(time * 1000);
     };
@@ -31,6 +36,7 @@ export function LenisProvider({ children }: { children: ReactNode }) {
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      window.removeEventListener("resize", onResize);
       document.documentElement.classList.remove("lenis");
       gsap.ticker.remove(tick);
       lenis.destroy();

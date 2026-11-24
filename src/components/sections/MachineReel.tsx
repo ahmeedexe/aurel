@@ -1,12 +1,9 @@
-import { lazy, Suspense, useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
+import { MagneticButton } from "@/components/interactions/MagneticButton";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { IMAGES } from "@/lib/images";
 import { ensureGsapPlugins, gsap } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-
-const VehicleCanvas = lazy(() =>
-  import("@/components/scenes/VehicleCanvas").then((m) => ({ default: m.VehicleCanvas }))
-);
 
 function ShortSpecPanel() {
   return (
@@ -74,11 +71,24 @@ export function MachineReel() {
         Torsion spine · forged aluminium
       </figcaption>
     </figure>,
-    <div key="sculpt" className="flex h-full min-h-[70svh] min-w-full flex-col justify-center border-y border-graphite bg-ink px-6 md:min-w-[65vw] md:border-x md:border-y-0 md:px-10">
-      <p className="text-mono text-signal">Live sculpture</p>
-      <Suspense fallback={<div className="mt-6 h-[50vh] animate-pulse bg-graphite" />}>
-        <VehicleCanvas className="mt-6 h-[min(58vh,480px)] w-full border border-graphite bg-charcoal" dpr={1.35} />
-      </Suspense>
+    <div
+      key="sculpt"
+      className="flex h-full min-h-[70svh] min-w-full flex-col justify-center gap-6 border-y border-graphite bg-ink px-6 md:min-w-[65vw] md:border-x md:border-y-0 md:px-10"
+    >
+      <p className="text-mono text-signal">Type-01 · GLB</p>
+      <p className="text-editorial max-w-lg text-2xl text-silver">
+        The live mesh runs once in Compose — orbit, paint, wheels, cabin, and studio lighting share a single WebGL
+        context (no duplicate scene load).
+      </p>
+      <figure className="relative mt-2 h-[min(40vh,360px)] overflow-hidden border border-graphite">
+        <img src={IMAGES.heroVehicle} alt="" className="h-full w-full object-cover opacity-70" loading="lazy" />
+        <figcaption className="text-mono absolute bottom-3 left-3 bg-ink/85 px-3 py-2 text-silver">
+          Reference frame · interactive GLB in chapter 06
+        </figcaption>
+      </figure>
+      <MagneticButton href="#experience" className="self-start">
+        Open configurator
+      </MagneticButton>
     </div>,
     <ShortSpecPanel key="spec" />,
   ];
