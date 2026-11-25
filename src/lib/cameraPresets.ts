@@ -1,32 +1,58 @@
-export type CameraPresetId = "front" | "profile" | "cabin";
+export type CameraPresetId = "front" | "profile" | "cabin" | "rear";
 
-/** Spherical orbit targets — cabin is an elevated exterior windshield view, not interior geometry. */
+/**
+ * Angles tuned for the demo GLB after Y=π/2 placement (three.js sample mesh — not a bespoke AUREL model).
+ * `distanceMult` is multiplied by measured `fitRadius` at runtime.
+ */
 export const CAMERA_PRESETS: Record<
   CameraPresetId,
-  { azimuth: number; polar: number; distance: number; targetY: number; label: string; hint: string }
+  {
+    azimuth: number;
+    polar: number;
+    distanceMult: number;
+    targetYOff: number;
+    label: string;
+    hint: string;
+  }
 > = {
   front: {
-    azimuth: 0.05,
-    polar: 1.38,
-    distance: 3.15,
-    targetY: 0.28,
+    azimuth: Math.PI * 0.52,
+    polar: 1.44,
+    distanceMult: 2.15,
+    targetYOff: 0.02,
     label: "Front",
     hint: "Head-on studio",
   },
   profile: {
-    azimuth: Math.PI * 0.48,
-    polar: 1.32,
-    distance: 3.45,
-    targetY: 0.26,
+    azimuth: Math.PI * 0.02,
+    polar: 1.34,
+    distanceMult: 2.38,
+    targetYOff: 0,
     label: "Profile",
     hint: "Side graphic",
   },
   cabin: {
-    azimuth: 0.22,
-    polar: 1.02,
-    distance: 2.72,
-    targetY: 0.42,
+    azimuth: Math.PI * 0.48,
+    polar: 1.12,
+    distanceMult: 1.88,
+    targetYOff: 0.08,
     label: "Cabin",
     hint: "Exterior windshield view",
   },
+  rear: {
+    azimuth: Math.PI * 1.02,
+    polar: 1.36,
+    distanceMult: 2.22,
+    targetYOff: 0.03,
+    label: "Rear",
+    hint: "Tail lamps · demo anchors",
+  },
+};
+
+export const SCROLL_CAMERA = {
+  azimuthStart: 0.48,
+  azimuthSpan: Math.PI * 0.54,
+  polarStart: 1.18,
+  polarSpan: 0.1,
+  distanceMult: 2.05,
 };

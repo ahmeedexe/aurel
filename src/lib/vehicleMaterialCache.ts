@@ -1,9 +1,15 @@
 import * as THREE from "three";
 import {
   createBodyPaint,
+  createGlassMaterial,
   createInterior,
+  createBrakeDiscMaterial,
+  createLampDrlMaterial,
+  createLampHeadMaterial,
+  createLampRearMaterial,
   createRimMaterial,
   createTireMaterial,
+  createWheelCapMaterial,
 } from "@/lib/vehicleMaterials";
 
 const pool = new Map<string, THREE.Material>();
@@ -52,6 +58,30 @@ export function rimMaterial(hex: string, roughness: number) {
 
 export function tireMaterial() {
   return fromPool("tire", () => createTireMaterial());
+}
+
+export function brakeDiscMaterial() {
+  return fromPool("brake-disc", () => createBrakeDiscMaterial());
+}
+
+export function wheelCapMaterial(hex: string) {
+  return fromPool(`wheel-cap:${hex}`, () => createWheelCapMaterial(hex));
+}
+
+export function lampDrlMaterial() {
+  return fromPool("lamp-drl", () => createLampDrlMaterial());
+}
+
+export function lampHeadMaterial() {
+  return fromPool("lamp-head", () => createLampHeadMaterial());
+}
+
+export function lampRearMaterial() {
+  return fromPool("lamp-rear", () => createLampRearMaterial());
+}
+
+export function glassMaterial() {
+  return fromPool("glass", () => createGlassMaterial());
 }
 
 export function clearVehicleMaterialPool() {

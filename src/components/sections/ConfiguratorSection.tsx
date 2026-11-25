@@ -53,25 +53,24 @@ export function ConfiguratorSection() {
   }, [reduced]);
 
   return (
-    <section id="experience" ref={sectionRef} className="scroll-mt-20 bg-ink px-5 py-24 md:px-10 md:py-28">
+    <section id="experience" ref={sectionRef} className="scroll-mt-20 bg-ink px-5 py-20 md:px-10 md:py-28">
       <div className="config-copy">
         <SectionLabel>06 — Configure</SectionLabel>
         <h2 className="text-display mt-6 text-[clamp(2.5rem,8vw,5rem)] text-warm">Compose Type-01</h2>
         <p className="mt-4 max-w-xl text-silver">
-          Scroll to sweep the studio camera — then drag to take the wheel. Paint, wheels, cabin, and HDR lighting remap
-          the GLB in real time.
+          Demo GLB with remapped materials — scroll to sweep the camera, drag to orbit, or use studio presets.
         </p>
       </div>
-      <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_360px]">
+      <div className="mt-10 grid grid-cols-1 items-start gap-6 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_min(100%,320px)] lg:gap-8">
         <Suspense
-          fallback={<div className="h-[min(60vh,520px)] animate-pulse border border-graphite bg-charcoal" />}
+          fallback={<div className="h-[min(48svh,420px)] animate-pulse border border-graphite bg-charcoal lg:h-[min(60vh,560px)]" />}
         >
           <VehicleCanvas
-            className="config-stage cinematic-frame h-[min(60vh,520px)] w-full border border-graphite bg-charcoal"
+            className="config-stage cinematic-frame h-[min(48svh,420px)] w-full min-h-[280px] border border-graphite bg-charcoal sm:h-[min(52vh,480px)] lg:h-[min(60vh,560px)]"
             dpr={1.5}
           />
         </Suspense>
-        <ConfiguratorPanel />
+        <ConfiguratorPanel className="lg:sticky lg:top-24 lg:self-start" />
       </div>
     </section>
   );

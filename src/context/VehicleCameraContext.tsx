@@ -1,11 +1,16 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import type { CameraPresetId } from "@/lib/cameraPresets";
+import type { VehicleFitMetrics } from "@/lib/vehicleBounds";
+
+const DEFAULT_FIT: VehicleFitMetrics = { radius: 1.05, footY: -0.02, centerY: 0.26 };
 
 type VehicleCameraContextValue = {
   preset: CameraPresetId | null;
   setPreset: (id: CameraPresetId | null) => void;
   userDriving: boolean;
   setUserDriving: (v: boolean) => void;
+  fit: VehicleFitMetrics;
+  setFit: (m: VehicleFitMetrics) => void;
 };
 
 const VehicleCameraContext = createContext<VehicleCameraContextValue | null>(null);
@@ -13,6 +18,7 @@ const VehicleCameraContext = createContext<VehicleCameraContextValue | null>(nul
 export function VehicleCameraProvider({ children }: { children: ReactNode }) {
   const [preset, setPresetState] = useState<CameraPresetId | null>(null);
   const [userDriving, setUserDriving] = useState(false);
+  const [fit, setFit] = useState<VehicleFitMetrics>(DEFAULT_FIT);
 
   const setPreset = useCallback((id: CameraPresetId | null) => {
     setPresetState(id);
@@ -25,8 +31,10 @@ export function VehicleCameraProvider({ children }: { children: ReactNode }) {
       setPreset,
       userDriving,
       setUserDriving,
+      fit,
+      setFit,
     }),
-    [preset, setPreset, userDriving]
+    [fit, preset, setPreset, userDriving]
   );
 
   return <VehicleCameraContext.Provider value={value}>{children}</VehicleCameraContext.Provider>;

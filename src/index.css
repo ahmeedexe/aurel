@@ -139,8 +139,10 @@
     }
 
     .finale-body,
-    .finale-eol {
+    .finale-eol,
+    .finale-eol-bg {
       opacity: 1 !important;
+      filter: none !important;
     }
   }
 }

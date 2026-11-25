@@ -7,6 +7,7 @@ import { dismissOrbitCoachmark, OrbitCoachmark } from "@/components/scenes/Orbit
 import { VehicleFallback } from "@/components/scenes/VehicleFallback";
 import { useCanvasInView } from "@/hooks/useCanvasInView";
 import { useFinePointer } from "@/hooks/useFinePointer";
+import { useNarrowViewport } from "@/hooks/useNarrowViewport";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useWebGLSupported } from "@/hooks/useWebGLSupported";
 
@@ -41,6 +42,7 @@ export function VehicleCanvas({ className, dpr = 1.5 }: Props) {
   const reduced = useReducedMotion();
   const webgl = useWebGLSupported();
   const fine = useFinePointer();
+  const narrow = useNarrowViewport();
   const { ref: viewRef, inView } = useCanvasInView<HTMLDivElement>();
   const orbitActive = useRef(false);
 
@@ -70,12 +72,13 @@ export function VehicleCanvas({ className, dpr = 1.5 }: Props) {
     return <VehicleFallback className={`relative overflow-hidden ${className ?? ""}`} reason="webgl" />;
   }
 
-  const maxDpr = reduced ? 1 : dpr;
+  const maxDpr = reduced ? 1 : narrow ? Math.min(dpr, 1.35) : dpr;
+  const fov = narrow ? 39 : 35;
 
   return (
     <div
       ref={viewRef}
-      className={`relative ${className ?? ""}`}
+      className={`relative overflow-hidden ${className ?? ""}`}
       data-cursor="orbit"
       data-canvas-visible={inView ? "true" : "false"}
       aria-label="Interactive AUREL Type-01"
@@ -86,20 +89,21 @@ export function VehicleCanvas({ className, dpr = 1.5 }: Props) {
         fallback={<VehicleFallback className="relative h-full min-h-[280px] overflow-hidden" reason="error" />}
       >
         <Canvas
+          className="!h-full !w-full"
           dpr={[1, maxDpr]}
           frameloop={inView ? "always" : "demand"}
-          camera={{ position: [2.8, 0.95, 3.6], fov: 38 }}
+          camera={{ position: [2.8, 0.95, 3.6], fov }}
           gl={{
             antialias: true,
             powerPreference: "high-performance",
             toneMapping: THREE.ACESFilmicToneMapping,
-            toneMappingExposure: 1.08,
+            toneMappingExposure: 1.06,
           }}
         >
           <Suspense fallback={<SceneLoader />}>
             <VehicleModel />
           </Suspense>
-          <CinematicOrbitControls enableZoom={!reduced} />
+          <CinematicOrbitControls enableZoom={!reduced} narrowViewport={narrow} />
         </Canvas>
       </WebGLErrorBoundary>
     </div>

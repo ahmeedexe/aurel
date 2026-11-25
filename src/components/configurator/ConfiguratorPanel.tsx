@@ -1,6 +1,7 @@
 import { INTERIORS, LIGHTING, PAINTS, WHEELS } from "@/data/config";
 import { useConfigurator } from "@/context/ConfiguratorContext";
 import { useVehicleCamera } from "@/context/VehicleCameraContext";
+import { useVehicleExperience } from "@/context/VehicleExperienceContext";
 import { CAMERA_PRESETS, type CameraPresetId } from "@/lib/cameraPresets";
 import { useSound } from "@/context/SoundContext";
 import { cn } from "@/lib/utils";
@@ -56,12 +57,24 @@ function OptionGroup<T extends string>({
   );
 }
 
-const CAMERA_ORDER: CameraPresetId[] = ["front", "profile", "cabin"];
+const CAMERA_ORDER: CameraPresetId[] = ["front", "profile", "cabin", "rear"];
 
-export function ConfiguratorPanel() {
+export function ConfiguratorPanel({ className }: { className?: string }) {
   const cfg = useConfigurator();
   const { playTick } = useSound();
   const { preset, setPreset } = useVehicleCamera();
+  const {
+    lightsOn,
+    setLightsOn,
+    startExperience,
+    experienceRunning,
+    endExperience,
+    lightPhase,
+    drivePhase,
+    startEngine,
+    stopEngine,
+    resetDrive,
+  } = useVehicleExperience();
 
   const paintLabel = PAINTS.find((p) => p.id === cfg.paint)!.label;
   const wheelLabel = WHEELS.find((p) => p.id === cfg.wheels)!.label;
@@ -69,7 +82,7 @@ export function ConfiguratorPanel() {
   const lightLabel = LIGHTING.find((p) => p.id === cfg.lighting)!.label;
 
   return (
-    <aside className="border border-graphite bg-charcoal/80 p-5 backdrop-blur-md md:p-6">
+    <aside className={cn("border border-graphite bg-charcoal/80 p-5 backdrop-blur-md md:p-6", className)}>
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
           <p className="text-mono text-signal">Configurator</p>
@@ -82,9 +95,67 @@ export function ConfiguratorPanel() {
             playTick();
             cfg.reset();
             setPreset(null);
+            setLightsOn(false);
+            endExperience();
+            stopEngine();
+            resetDrive();
           }}
         >
           Reset
+        </button>
+      </div>
+
+      <div className="mb-6 flex flex-col gap-2 sm:flex-row">
+        <button
+          type="button"
+          className={cn(
+            "text-mono flex-1 border px-3 py-2 text-[0.65rem]",
+            lightsOn ? "border-signal bg-signal/15 text-warm" : "border-graphite text-silver hover:border-silver/40"
+          )}
+          aria-pressed={lightsOn}
+          onClick={() => {
+            playTick();
+            setLightsOn(!lightsOn);
+          }}
+        >
+          {lightsOn ? `LIGHTS ON · ${lightPhase.toUpperCase()}` : "LIGHTS OFF"}
+        </button>
+        <button
+          type="button"
+          className="text-mono flex-1 border border-graphite px-3 py-2 text-[0.65rem] text-silver hover:border-silver/40 hover:text-warm disabled:opacity-40"
+          disabled={experienceRunning}
+          onClick={() => {
+            playTick();
+            startExperience();
+          }}
+        >
+          Start experience
+        </button>
+      </div>
+
+      <div className="mb-6 flex flex-col gap-2 sm:flex-row">
+        <button
+          type="button"
+          className="text-mono flex-1 border border-graphite px-3 py-2 text-[0.65rem] text-silver hover:border-silver/40 hover:text-warm disabled:opacity-40"
+          disabled={drivePhase === "startup" || drivePhase === "rolling"}
+          onClick={() => {
+            playTick();
+            setLightsOn(true);
+            startEngine();
+          }}
+        >
+          Start engine
+        </button>
+        <button
+          type="button"
+          className="text-mono flex-1 border border-graphite px-3 py-2 text-[0.65rem] text-silver hover:border-silver/40 hover:text-warm disabled:opacity-40"
+          disabled={drivePhase === "idle" && !lightsOn}
+          onClick={() => {
+            playTick();
+            stopEngine();
+          }}
+        >
+          Stop · {drivePhase}
         </button>
       </div>
 
@@ -97,7 +168,7 @@ export function ConfiguratorPanel() {
 
       <div className="mb-6">
         <p className="text-mono mb-3 text-silver">Camera</p>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {CAMERA_ORDER.map((id) => (
             <button
               key={id}
